@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -19,7 +20,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.iktakademija.Serialization.security.Views;
 
-@Entity(name = "address")
+@Entity
+@Table(name = "address")
 @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class AddressEntity {
 	
@@ -43,7 +45,7 @@ public class AddressEntity {
 	
 	@JsonBackReference("JoinAddress")
 	@OneToMany(mappedBy = "address", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	private List<UserEntity> user = new ArrayList<UserEntity>();
+	private List<UserEntity> users = new ArrayList<UserEntity>();
 	
 	@Version
 	private Integer version;
@@ -84,12 +86,12 @@ public class AddressEntity {
 		this.country = country;
 	}
 
-	public List<UserEntity> getUser() {
-		return user;
+	public List<UserEntity> getUsers() {
+		return users;
 	}
 
-	public void setUser(List<UserEntity> user) {
-		this.user = user;
+	public void setUsers(List<UserEntity> users) {
+		this.users = users;
 	}
 
 	public Integer getVersion() {

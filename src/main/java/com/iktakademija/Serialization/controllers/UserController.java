@@ -16,15 +16,19 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.iktakademija.Serialization.controllers.dto.UserRegisterDTO;
 import com.iktakademija.Serialization.controllers.util.RESTError;
 import com.iktakademija.Serialization.entities.UserEntity;
-import com.iktakademija.Serialization.repositories.UserEntityRepository;
+import com.iktakademija.Serialization.repositories.UserRepository;
 import com.iktakademija.Serialization.security.Views;
+import com.iktakademija.Serialization.services.UserService;
 
 @RestController
 @RequestMapping(path = "/api/v1/users")
 public class UserController {
 	
 	@Autowired
-	UserEntityRepository userEntityRepository;
+	UserRepository userEntityRepository;
+	
+	@Autowired
+	UserService userEntityService;
 	
 	@JsonView(Views.Public.class)
 	@RequestMapping(method = RequestMethod.GET, path = {"/public", ""})
@@ -32,7 +36,7 @@ public class UserController {
 		
 		List<UserEntity> retVal = userEntityRepository.findAll();
 		
-		if (retVal.size() == 0) {
+		if (retVal.isEmpty()) {
 			//return new ResponseEntity<String>("NotFound", HttpStatus.NOT_FOUND);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -44,14 +48,26 @@ public class UserController {
 	
 	@JsonView(Views.Private.class)
 	@RequestMapping(method = RequestMethod.GET, path = "/private")
-	public List<UserEntity> getAllUsersPrivate() {
-		return userEntityRepository.findAll();
+	public ResponseEntity<?> getAllUsersPrivate() {
+		
+		List<UserEntity> users = (List<UserEntity>) userEntityRepository.findAll();		
+		if (users.isEmpty()) {	
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<List<UserEntity>>(users, HttpStatus.OK);
+		}		
 	}
 	
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, path = "/admin")
-	public List<UserEntity> getAllUsersAdmin() {
-		return userEntityRepository.findAll();
+	public ResponseEntity<?> getAllUsersAdmin() {
+		List<UserEntity> users = (List<UserEntity>) userEntityRepository.findAll();
+
+		if (users.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<List<UserEntity>>(users, HttpStatus.OK);
+		}
 	}
 	
 	/** 
@@ -88,7 +104,9 @@ public class UserController {
 			UserEntity userEntity = new UserEntity();
 			userEntity.setEmail(userRegisterDTO.getEmail());
 			userEntity.setName(userRegisterDTO.getName());
-
+			userEntity.setDateOfBirth(userRegisterDTO.getDateOfBirth());
+			userEntity.setPassword(userRegisterDTO.getPassword());
+			
 			userEntityRepository.save(userEntity);
 			return new ResponseEntity<UserEntity>(userEntity, HttpStatus.CREATED);
 		
@@ -113,7 +131,7 @@ public class UserController {
 			if (userRegisterDTO.getName() == null) 			userEntity.setName(userRegisterDTO.getName());
 			if (userRegisterDTO.getEmail() == null) 		userEntity.setEmail(userRegisterDTO.getEmail());
 			if (userRegisterDTO.getDateOfBirth() == null) 	userEntity.setDateOfBirth(userRegisterDTO.getDateOfBirth());
-			if (userRegisterDTO.getPasword() == null) 		userEntity.setPasword(userRegisterDTO.getPasword());
+			if (userRegisterDTO.getPassword() == null) 		userEntity.setPassword(userRegisterDTO.getPassword());
 			
 			userEntityRepository.save(userEntity);
 			return new ResponseEntity<UserEntity>(userEntity, HttpStatus.CREATED);
@@ -124,4 +142,15 @@ public class UserController {
 		}
 	}	
 	
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	public ResponseEntity<?> removeUserbyID(@PathVariable Integer userID) {
+
+		if (userID == null) {
+			return new ResponseEntity<RESTError>(new RESTError("User not found, please check the input!", 1), HttpStatus.BAD_REQUEST);
+		}
+		UserEntity userForDeletion = userEntityRepository.findById(userID).get();
+		userEntityRepository.delete(userForDeletion);
+		return new ResponseEntity<UserEntity>(userForDeletion, HttpStatus.OK);
+	}
 }

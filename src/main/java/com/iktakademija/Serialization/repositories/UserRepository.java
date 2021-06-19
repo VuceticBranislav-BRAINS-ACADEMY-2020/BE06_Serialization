@@ -7,8 +7,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.iktakademija.Serialization.entities.UserEntity;
 
-public interface UserEntityRepository extends CrudRepository<UserEntity, Integer>{
+public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 	
 	List<UserEntity> findAll();
 	Optional<UserEntity> findById(Integer id);
+	Optional<UserEntity> findByEmail(String email);
 }

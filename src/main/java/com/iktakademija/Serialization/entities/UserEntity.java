@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,7 +29,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.iktakademija.Serialization.security.Views;
 
-@Entity(name = "user")
+@Entity
+@Table(name = "user")
 @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class UserEntity {
 	
@@ -54,7 +56,7 @@ public class UserEntity {
 	
 	@Column
 	@JsonIgnore
-	private String pasword;	
+	private String password;	
 
 	@JsonView(Views.Private.class)
 	@JsonManagedReference("JoinAddress")	
@@ -107,12 +109,12 @@ public class UserEntity {
 		this.email = email;
 	}
 
-	public String getPasword() {
-		return pasword;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setPasword(String pasword) {
-		this.pasword = pasword;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public Integer getVersion() {

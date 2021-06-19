@@ -10,7 +10,7 @@ public class UserRegisterDTO {
 	private String name;
 	private String email;
 	private LocalDate dateOfBirth;
-	private String pasword;
+	private String password;
 
 	// DTO moze i u entities paket
 	public UserRegisterDTO() {
@@ -48,13 +48,13 @@ public class UserRegisterDTO {
 	}
 
 	@JsonView(Views.Private.class)
-	public String getPasword() {
-		return pasword;
+	public String getPassword() {
+		return password;
 	}
 
 	@JsonView(Views.Private.class)
-	public void setPasword(String pasword) {
-		this.pasword = pasword;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }
