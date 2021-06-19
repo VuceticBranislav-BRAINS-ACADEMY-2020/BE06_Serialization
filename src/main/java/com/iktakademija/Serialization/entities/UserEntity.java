@@ -45,7 +45,7 @@ public class UserEntity {
 	private String name;
 	
 	@DateTimeFormat(iso = ISO.DATE)
-	@Column
+	@Column(name = "birthdate")
 	@JsonView(Views.Admin.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate dateOfBirth;
