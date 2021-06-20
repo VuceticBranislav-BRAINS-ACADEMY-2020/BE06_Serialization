@@ -21,15 +21,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.iktakademija.Serialization.controllers.util.CustomLocalDateDeserializer;
+import com.iktakademija.Serialization.controllers.util.CustomLocalDateSerializer;
 import com.iktakademija.Serialization.security.Views;
 
-@Entity
+@Entity(name = "user")
 @Table(name = "user")
 @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class UserEntity {
@@ -47,7 +50,9 @@ public class UserEntity {
 	@DateTimeFormat(iso = ISO.DATE)
 	@Column(name = "birthdate")
 	@JsonView(Views.Admin.class)
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	//@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")	
+	@JsonSerialize(using = CustomLocalDateSerializer.class)
+	@JsonDeserialize(using = CustomLocalDateDeserializer.class)
 	private LocalDate dateOfBirth;
 	
 	@Column(nullable = false)
@@ -61,7 +66,7 @@ public class UserEntity {
 	@JsonView(Views.Private.class)
 	@JsonManagedReference("JoinAddress")	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user")
+	@JoinColumn(name = "address")
 	private AddressEntity address;
 	
 	@JsonBackReference("JoinAccount")	

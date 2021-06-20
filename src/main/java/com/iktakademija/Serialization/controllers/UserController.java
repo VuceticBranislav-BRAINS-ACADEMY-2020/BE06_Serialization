@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.iktakademija.Serialization.controllers.dto.UserRegisterDTO;
 import com.iktakademija.Serialization.controllers.util.RESTError;
+import com.iktakademija.Serialization.entities.BankAccount;
 import com.iktakademija.Serialization.entities.UserEntity;
+import com.iktakademija.Serialization.repositories.BankAccountRepositry;
 import com.iktakademija.Serialization.repositories.UserRepository;
 import com.iktakademija.Serialization.security.Views;
 import com.iktakademija.Serialization.services.UserService;
@@ -29,6 +31,9 @@ public class UserController {
 	
 	@Autowired
 	UserService userEntityService;
+	
+	@Autowired
+	BankAccountRepositry bankAccountRepositry;
 	
 	@JsonView(Views.Public.class)
 	@RequestMapping(method = RequestMethod.GET, path = {"/public", ""})
@@ -144,13 +149,26 @@ public class UserController {
 	
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-	public ResponseEntity<?> removeUserbyID(@PathVariable Integer userID) {
+	public ResponseEntity<?> removeUserbyID(@PathVariable(name = "id") Integer userID) {
+		try {
+			if (userID == null) {
+				return new ResponseEntity<RESTError>(new RESTError("User not found, please check the input!", 1), HttpStatus.BAD_REQUEST);
+			}
 
-		if (userID == null) {
-			return new ResponseEntity<RESTError>(new RESTError("User not found, please check the input!", 1), HttpStatus.BAD_REQUEST);
+			Optional<UserEntity> op = userEntityRepository.findById(userID);
+			if (op.isPresent() == false) return null;
+			UserEntity userForDeletion = op.get();
+
+			List<BankAccount> list = bankAccountRepositry.findAllByUserId(userID);
+			for (BankAccount bankAccount : list) {
+				bankAccount.setUser(null);
+			}
+			bankAccountRepositry.saveAll(list);
+
+			userEntityRepository.delete(userForDeletion);
+			return new ResponseEntity<UserEntity>(userForDeletion, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<RESTError>(new RESTError("Exception occurred:" + e.getMessage(), 2), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		UserEntity userForDeletion = userEntityRepository.findById(userID).get();
-		userEntityRepository.delete(userForDeletion);
-		return new ResponseEntity<UserEntity>(userForDeletion, HttpStatus.OK);
 	}
 }

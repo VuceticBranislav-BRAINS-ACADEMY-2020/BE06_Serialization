@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +27,7 @@ import net.andreinc.mockneat.unit.user.Names;
 import net.andreinc.mockneat.unit.user.Passwords;
 
 @RestController
-@RequestMapping(path = "/admin")
+@RequestMapping(path = "/api/v1/users/admin")
 public class AdminController {
 
 	@Autowired
@@ -39,10 +41,11 @@ public class AdminController {
 	
 	// Populate base
 	@RequestMapping(method = RequestMethod.POST, path = "/add")
-	public void poulateDataBase() {
+	public ResponseEntity<?> poulateDataBase() {
 		populateAddresses();
 		populateUsers();	
 		populateAccount();
+		return new ResponseEntity<String>("Database updated.", HttpStatus.OK);
 	}
 	
 	// Generate addresses entries to database.

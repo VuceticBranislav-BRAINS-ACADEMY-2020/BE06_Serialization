@@ -29,12 +29,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 		return card;
 	}
 
-	/**
-	 * makes a new account and assigns to user, saves account and user in db
-	 * @return AccountEntity
-	 * @param Integer userID
-	 * 
-	 */
 	@Override
 	public BankAccount createAccount(Integer userID) {
 

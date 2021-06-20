@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.iktakademija.Serialization.security.Views;
 
-@Entity
+@Entity(name = "address")
 @Table(name = "address")
 @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class AddressEntity {

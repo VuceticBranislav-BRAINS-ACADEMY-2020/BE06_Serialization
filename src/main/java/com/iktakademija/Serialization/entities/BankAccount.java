@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.iktakademija.Serialization.security.Views;
 
-@Entity
+@Entity(name = "account")
 @Table(name = "account")
 @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class BankAccount {

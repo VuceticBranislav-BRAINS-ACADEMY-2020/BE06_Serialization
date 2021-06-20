@@ -9,5 +9,7 @@ public class SerializationApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SerializationApplication.class, args);
 	}
+	
+	// TODO Dodati verifikacije na polja
 
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.iktakademija.Serialization.security.Views;
 
 public class AddressDTO {
-	
+
 	@JsonView(Views.Public.class)
 	private String street;
 
