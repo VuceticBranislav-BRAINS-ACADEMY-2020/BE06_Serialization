@@ -64,7 +64,8 @@ public class UserEntity {
 	private String password;	
 
 	@JsonView(Views.Private.class)
-	@JsonManagedReference("JoinAddress")	
+//	@JsonManagedReference("JoinAddress")
+	@JsonBackReference("JoinAddress")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "address")
 	private AddressEntity address;

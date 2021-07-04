@@ -15,14 +15,21 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.iktakademija.Serialization.security.Views;
 
 @Entity(name = "address")
 @Table(name = "address")
 @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
+//@JsonRootName(value = "user")
+@JsonTypeName("address")
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
 public class AddressEntity {
 	
 	@Id
@@ -43,7 +50,9 @@ public class AddressEntity {
 	@JsonView(Views.Private.class)
 	private String country;
 	
-	@JsonBackReference("JoinAddress")
+//	@JsonIgnore
+	@JsonManagedReference("JoinAddress")
+//	@JsonBackReference("JoinAddress")
 	@OneToMany(mappedBy = "address", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<UserEntity> users = new ArrayList<UserEntity>();
 	
